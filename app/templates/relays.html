@@ -1,0 +1,118 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN"
+	"http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd">
+
+
+<html>
+    <head>
+        <title>OC Relays</title>
+        <script src="static/js/jquery-1.11.2.min.js"></script>
+    </head>
+<!--<meta http-equiv="refresh" content="1"> -->
+
+<!--   <body style="background-color:#480000">    -->
+    <body>
+    {% extends "layout.html" %}
+    {% block content %}
+
+            <h3>Relays <small>board.1</small></h3>
+            <h6>To swicht On/Off the device click on the status button</h6>
+
+<!--
+    <div class="panel panel-default">
+-->
+
+        <div id="table_1">
+            <table  style="text-align:center; background-color:#303030; color:#F0F0F0" class="table table-condensed table-bordered ">
+                    <tr>
+                    {% for d in dev|sort %}
+                        <td style="text-align:center; background-color:#303030; color:#F0F0F0">{{dev[d].name}}</td> <!--  <small>({{d}})</small></td> -->
+                    {% endfor %}
+                    </tr>
+                    <tr>
+                    {% for d in dev|sort %}
+                        {% if dev[d].state == 1 %}
+                        <td><b>
+                            <input type="button" id={{d|string}} onclick="MyFunction5({{d}},{{dev[d].state}},'{{dev[d].name}}')" class="btn btn-sm btn-block" style="text-align:center; background-color:#800000; color:#F0F0F0;font-weight:bold" value="OFF">
+                        </b></td>
+                        {% else %}
+                        <td>
+                            <input type="button" id={{d|string}} onclick="MyFunction5({{d}},{{dev[d].state}},'{{dev[d].name}}')" class="btn btn-sm btn-block" style="text-align:center; background-color:#005C00; color:#F0F0F0;font-weight:bold" value="ON">
+                        </td>
+
+                        {% endif %}
+                    {% endfor %}
+                    </tr>
+            </table>
+
+
+
+            <div class="panel">
+                <div class="panel-body">
+                    <div class="row ">
+                        <div class="col-xs-9 col-md-9">
+                          <button  title="ALL Off" onclick="MyFunction3(0)" type="button" class="btn btn-sm" data-toggle=" tooltip" style="text-align:center; background-color:#303030; color:#F0F0F0" data-placement="bottom">ALL OFF</button>
+                          <button title="ALL On" onclick="MyFunction3(1)" type="button" class="btn btn-sm" data-toggle=" tooltip" style="text-align:center; background-color:#303030; color:#F0F0F0" data-placement="bottom">ALL ON</button>
+                        </div>
+                        <div class="col-xs-3 col-md-3">
+                          <button title="Reload" onclick="MyFunction1()" type="button" class="btn btn-sm" data-toggle=" tooltip" style="text-align:center; background-color:#303030; color:#F0F0F0" data-placement="bottom">Reload</button>
+                        <p><h6>updated: {{dataR.time}}</h6></p>
+                        </div>
+                    </div>
+                    </div>
+               </div>
+            </div>
+        </div>
+
+
+        <script> setInterval(function(){
+            $('#table_1').load(document.URL +  ' #table_1');
+            },5000);</script>
+
+    </body>
+
+
+<!------------------- jscripts ----------------------->
+
+    <script>
+        function MyFunction1() {
+            location.reload();
+            }
+    </script>
+
+    <script>
+        function MyFunction3(x) {
+            $.ajax({type:"GET",url:"/relays/all/"+x});
+            setTimeout(MyFunction1, 1000);
+        }
+    </script>
+
+    <script>
+        function MyFunction5(dev,state,name) {
+            var stat = state;
+            var num = "#"+dev;
+            var btn = $(num);
+            if ((btn.attr('value')) == "ON") {
+                stat = 0;
+                btn.attr({'style':'text-align:center; background-color:#FF1919; color:#303030;font-weight:bold', 'value':'OFF'});}
+            else {
+                stat = 1;
+                btn.attr({'style':'text-align:center; background-color:#5CE62E; color:#303030;font-weight:bold', 'value':'ON'});}
+
+            $.ajax({type: "GET",url: "/relays/"+dev+"/"+stat+"/"+name});
+            setTimeout(MyFunction1, 1000);
+            };
+    </script>
+
+
+    <script>
+        function MyTimer() {
+            var d = new Date();
+            var n = d.toUTCString();
+            document.getElementById("demo").innerHTML = n;
+        }
+    </script>
+
+     {% endblock %}
+
+</html>
+

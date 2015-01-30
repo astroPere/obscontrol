@@ -1,0 +1,8 @@
+#!/bin/bash
+clear
+cdate=$(date +%Y%m%d_%H%M%S)
+files="qtdesigner.py CSequ_3.py CTois_2.py dispatcher.sh mplwidget.py"
+for file in $files; do
+    cp $file "/home/pere/Documents/PYTHON/dispatcher_backups/"${file%%.*}_$cdate".backup"
+    echo 'backup    '$file "  >>  /home/pere/Documents/PYTHON/dispatcher_backups/"${file%%.*}_$cdate".backup"
+done
